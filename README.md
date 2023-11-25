@@ -21,4 +21,12 @@
 ### SUPPRIMER
 ![supp](https://github.com/hasnahatti70/tpjsf/assets/127605934/c5b5929a-ccd7-4e90-ac0c-7e2a5aa9308c)
 
+## Recherche par service et par chef de service
+
+![Rechercher](https://github.com/hasnahatti70/tpjsf/assets/127605934/c6020f01-db8d-4bb6-9de1-8142611a5403)
+
+## Graphe permettant d’afficher le nombre d’employés par service
+
+![static](https://github.com/hasnahatti70/tpjsf/assets/127605934/828c3064-9382-40da-ae11-79e09f721dde)
+
 
