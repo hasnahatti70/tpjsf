@@ -1,0 +1,250 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>employeService</title>
+            </f:facet>
+                    <style>
+        /* Main styles for the entire page */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #5cb85c;
+        }
+        
+        /* Style for the menu */
+        .ui-menu {
+            background-color: #5cb85c; /* Dark red background */
+        }
+        .ui-menu .ui-menuitem-link {
+            color: #5cb85c; /* White text color */
+        }
+        .ui-menu .ui-menuitem-link:hover {
+            background-color: #5cb85c; /* Slightly darker red for hover state */
+        }
+        
+        /* Style for headers */
+        .ui-panel .ui-panel-titlebar {
+            background-color: #5cb85c; /* Brownish red */
+            color: #5cb85c; /* White text color */
+            border: #5cb85c;
+        }
+        
+        /* Style for buttons */
+        .ui-button {
+            background-color: #5cb85c; /* Dark red */
+            color: #5cb85c; /* White text */
+            border: none;
+        }
+        .ui-button:hover {
+            background-color: #5cb85c; /* Slightly darker red for hover state */
+        }
+        
+        /* Style for table */
+        .ui-datatable .ui-datatable-header,
+        .ui-datatable .ui-column-title {
+            background-color: #5cb85c; /* Brownish red */
+            color: #fff; /* White text */
+        }
+        .ui-datatable .ui-datatable-tablewrapper {
+            border: none;
+        }
+        .ui-datatable tr {
+            border-bottom: 1px solid #ddd; /* Light gray border for rows */
+        }
+        
+        /* Style for input fields */
+        .ui-inputfield, .ui-calendar {
+            border: 1px solid #ddd; /* Light gray border */
+            padding: 5px;
+        }
+        
+        /* Footer style */
+        footer {
+            background-color: #5cb85c; /* Dark red */
+            color: #5cb85c; /* White text */
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+        </h:head>
+
+        <h:body>
+
+            <p:layout fullPage="true">
+
+                <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
+                    <h:form id="form1">
+                        <p:panelGrid columns="4">
+                            <p:clock pattern="dd/MM/yyyy" />
+                            <p:clock pattern="hh:mm:ss" />
+                            <p:outputLabel value="Select Calendar"/>
+                            <p:calendar id="cal"  navigator="true" />
+                        </p:panelGrid>
+                    </h:form>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="south" size="100" closable="true" collapsible="true">
+                    Footer
+                </p:layoutUnit>
+
+                <p:layoutUnit position="west" size="250" header="Menu" collapsible="true">
+                    <h:form id="form2">
+                        <p:menu>
+                            <p:submenu label="Resources">
+                               <p:menuitem value="Employe" url="http://localhost:8080/Webhas_1/faces/EmployeForm.xhtml" />
+                            <p:menuitem value="Service" url="http://localhost:8080/Webhas_1/faces/ServiceForm.xhtml" />
+                            <p:menuitem value="Rechercher" url="http://localhost:8080/Webhas_1/faces/ListEmployeService.xhtml" icon="ui-icon-star"/>
+                            <p:menuitem value="Statistics" url="http://localhost:8080/Webhas_1/faces/statistics.xhtml" icon="ui-icon-star"/>
+                            </p:submenu>
+                        </p:menu> 
+                    </h:form>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center">
+                    <p:panel>
+                        <p:panelGrid columns="2">
+                            <p:panelGrid columns="1">
+                                <h:form id="form3">
+                                    <p:panel header="Rechercher par service">
+                                        <p:panelGrid columns="2">
+                                            <p:outputLabel value="Service"/>
+                                            <p:selectOneMenu value="#{serviceBean.service.id}" required="true">
+                                                <f:selectItem itemLabel="Select One" itemValue=""/>
+                                                <f:selectItems value="#{serviceBean.services}" var="s"
+                                                               itemLabel="#{s.nom}" itemValue="#{s.id}"/>
+                                                <p:ajax event="change" listener="#{serviceBean.load()}" update=":form:tab"/>
+                                            </p:selectOneMenu>
+                                        </p:panelGrid>
+                                        <p:commandButton value="Chercher" actionListener="#{serviceBean.load()}" update=":form4:tab9"/>
+                                    </p:panel>
+                                </h:form>
+                                <h:form id="form">
+
+                                    <p:growl id="messages" showDetail="true"/>
+
+                                    <p:dataTable var="m" value="#{serviceBean.employes}" id="tab" editable="true" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rowsPerPageTemplate="5,10,15">
+
+                                        <f:facet name="header">
+                                            Liste des employes
+                                        </f:facet>
+
+                                        <p:ajax event="rowEdit" listener="#{employeBean.onEdit}" update=":form:messages" />
+                                        <p:ajax event="rowEditCancel" listener="#{employeBean.onCancel}" update=":form:messages" />
+
+                                        <p:column headerText="Nom" style="width:30%">
+                                            <p:cellEditor>
+                                                <f:facet name="output">
+                                                    <h:outputText value="#{m.nom}" />
+                                                </f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText value="#{m.nom}" style="width:100%"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+
+                                        <p:column headerText="Prenom" style="width:20%">
+                                            <p:cellEditor>
+                                                <f:facet name="output">
+                                                    <h:outputText value="#{m.prenom}" />
+                                                </f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText value="#{m.prenom}" style="width:100%" label="Year"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+
+                                        <p:column headerText="Chef" style="width:20%">
+                                            <p:cellEditor>
+                                                <f:facet name="output">
+                                                    <h:outputText value="#{m.employe}" />
+                                                </f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText value="#{m.employe}" style="width:100%" label="Year"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+
+                                        <!-- Add columns for Photo, Date de Naissance, and Service -->
+
+                                    </p:dataTable>
+                                </h:form>
+                            </p:panelGrid>
+                            
+                            <p:panelGrid columns="1">
+                                <h:form id="form5">
+                                    <p:panel header="Rechercher par chef">
+                                        <p:panelGrid columns="2">
+                                            <p:outputLabel value="Employee"/>
+                                            <p:selectOneMenu value="#{employeBean.employe.id}" required="true">
+                                                <f:selectItem itemLabel="Select One" itemValue=""/>
+                                                <f:selectItems value="#{employeBean.employes}" var="s"
+                                                               itemLabel="#{s.nom}" itemValue="#{s.id}"/>
+                                                <p:ajax event="change" listener="#{employeBean.load()}" update=":form4:tab9"/>
+                                            </p:selectOneMenu>
+                                        </p:panelGrid>
+                                        <p:commandButton value="Chercher" actionListener="#{employeBean.load()}" update=":form4:tab9"/>
+                                    </p:panel>
+                                </h:form>
+                                <h:form id="form4">
+
+                                    <p:growl id="messages" showDetail="true"/>
+
+                                    <p:dataTable var="m" value="#{employeBean.employe}" id="tab9" editable="true" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rowsPerPageTemplate="5,10,15">
+
+                                        <f:facet name="header">
+                                            Liste des employes
+                                        </f:facet>
+
+                                        <p:ajax event="rowEdit" listener="#{employeBean.onEdit}" update=":form:messages" />
+                                        <p:ajax event="rowEditCancel" listener="#{employeBean.onCancel}" update=":form:messages" />
+
+                                        <p:column headerText="Nom" style="width:30%">
+                                            <p:cellEditor>
+                                                <f:facet name="output">
+                                                    <h:outputText value="#{m.nom}" />
+                                                </f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText value="#{m.nom}" style="width:100%"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+
+                                        <p:column headerText="Prenom" style="width:20%">
+                                            <p:cellEditor>
+                                                <f:facet name="output">
+                                                    <h:outputText value="#{m.prenom}" />
+                                                </f:facet>
+                                                <f:facet name="input">
+                                                    <p:inputText value="#{m.prenom}" style="width:100%" label="Year"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+
+                                        <!-- Add columns for Photo, Date de Naissance, and Service -->
+
+                                    </p:dataTable>
+
+                                </h:form>
+                            </p:panelGrid>
+                        </p:panelGrid>
+                    </p:panel>    
+                </p:layoutUnit>
+            </p:layout>
+        </h:body>
+    </f:view>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>PrimeFaces</title>
+            </f:facet>
+            <style>
+        /* Main styles for the entire page */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #5cb85c;
+        }
+        
+        /* Style for the menu */
+        .ui-menu {
+            background-color: #5cb85c; /* Dark red background */
+        }
+        .ui-menu .ui-menuitem-link {
+            color: #5cb85c; /* White text color */
+        }
+        .ui-menu .ui-menuitem-link:hover {
+            background-color: #5cb85c; /* Slightly darker red for hover state */
+        }
+        
+        /* Style for headers */
+        .ui-panel .ui-panel-titlebar {
+            background-color: #5cb85c; /* Brownish red */
+            color: #5cb85c; /* White text color */
+            border: #5cb85c;
+        }
+        
+        /* Style for buttons */
+        .ui-button {
+            background-color: #5cb85c; /* Dark red */
+            color: #5cb85c; /* White text */
+            border: none;
+        }
+        .ui-button:hover {
+            background-color: #5cb85c; /* Slightly darker red for hover state */
+        }
+        
+        /* Style for table */
+        .ui-datatable .ui-datatable-header,
+        .ui-datatable .ui-column-title {
+            background-color: #5cb85c; /* Brownish red */
+            color: #fff; /* White text */
+        }
+        .ui-datatable .ui-datatable-tablewrapper {
+            border: none;
+        }
+        .ui-datatable tr {
+            border-bottom: 1px solid #ddd; /* Light gray border for rows */
+        }
+        
+        /* Style for input fields */
+        .ui-inputfield, .ui-calendar {
+            border: 1px solid #ddd; /* Light gray border */
+            padding: 5px;
+        }
+        
+        /* Footer style */
+        footer {
+            background-color: #5cb85c; /* Dark red */
+            color: #5cb85c; /* White text */
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+        </h:head>
+
+        <h:body>
+
+            <p:layout fullPage="true">
+
+                <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
+                    <h:form>
+                        <p:panelGrid columns="4">
+                            <p:clock pattern="dd/MM/yyyy" />
+                            <p:clock pattern="hh:mm:ss" />
+                            <p:outputLabel value="Select Calendar"/>
+                            <p:calendar id="cal"  navigator="true" />
+                        </p:panelGrid>
+                    </h:form>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="south" size="100" closable="true" collapsible="true">
+                    Footer
+                </p:layoutUnit>
+
+                <p:layoutUnit position="west" size="250" header="Menu" collapsible="true">
+                    <h:form>
+                        <p:menu>
+                            <p:submenu label="Navigations">
+                                <p:menuitem value="Employe" url="http://localhost:8080/Webhas_1/faces/EmployeForm.xhtml" />
+                            <p:menuitem value="Service" url="http://localhost:8080/Webhas_1/faces/ServiceForm.xhtml" />
+                            <p:menuitem value="Rechercher" url="http://localhost:8080/Webhas_1/faces/ListEmployeService.xhtml" icon="ui-icon-star"/>
+                            <p:menuitem value="Statistics" url="http://localhost:8080/Webhas_1/faces/statistics.xhtml" icon="ui-icon-star"/>
+                            </p:submenu>
+                        </p:menu> 
+                    </h:form>
+                </p:layoutUnit>
+
+<p:layoutUnit position="center">
+
+                    <h:form id="f1">
+                        <p:growl id="growl" showDetail="true" sticky="true"  life="1000"/>
+
+                        <p:panel header="Gestion des services">
+                            <p:panelGrid columns="3" id="p1">
+                                <p:outputLabel value="Id"/>
+                                <p:inputText id="id" value="#{serviceBean.service.id}" required="true"/>
+                                <p:message for="id" />
+                                <p:outputLabel value="Nom"/>
+                                <p:inputText id="nom" value="#{serviceBean.service.nom}"/>
+                                <p:message for="nom" />
+                                <p:outputLabel value="Chef De Service"/>
+                                <p:inputText id="chefService" value="#{serviceBean.service.chefService}"/>
+                                <p:message for="chefService" />
+                            </p:panelGrid>
+                            <p:commandButton value="Ajouter" actionListener="#{serviceBean.onCreateAction}" update=":f2, f1:p1"/>        
+                        </p:panel>
+                    </h:form>
+
+                    <f:view>
+                        <h:form id="f2">
+                            <p:dataTable id="tab" var="s" value="#{serviceBean.services}"  editable="true" paginator="true" rows="10">
+
+                                <f:facet name="header">
+                                    Liste des services
+                                </f:facet>
+
+                                <p:ajax event="rowEdit" listener="#{serviceBean.onEdit}"  />
+                                <p:ajax event="rowEditCancel" listener="#{serviceBean.onCancel}"  />
+
+                                <p:column headerText="Id" style="width:30%">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{s.id}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText value="#{s.id}" style="width:100%"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="Nom" style="width:20%">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{s.nom}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText value="#{s.nom}" style="width:100%" label="Year"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+<p:column headerText="Chef de Service" style="width:20%">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{s.chefService}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText value="#{s.chefService}" style="width:100%" label="Year"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Modifier" >
+                                    <p:rowEditor />
+                                </p:column>
+                                <p:column headerText="Supprimer">
+                                    <p:commandButton id="Supprimer" icon="ui-icon-trash"
+                                                     update=":f2:confirmDialog" oncomplete="PF('confirmation').show()"
+                                                     title="Supprimer">
+                                        <f:setPropertyActionListener target="#{serviceBean.service}"
+                                                                     value="#{s}" />
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>  
+                        
+                            <p:dialog id="confirmDialog" showEffect="fade"
+                                      header="Suppression d'une service" 
+                                      widgetVar="confirmation">
+                                <h:panelGrid id="display" columns="2" cellpadding="4"
+                                     style="margin:0 auto;" />
+                                <h:inputHidden value="#{serviceBean.service.id}" id="supp"
+                                               required="true" />
+                                
+                                <p:outputLabel
+                                    value="Etes vous sûr de vouloir supprimer cette Salle ?" />
+                                <p:commandButton id="confirm" value="Oui"
+                                                 update=":f2:tab" oncomplete="PF('confirmation').hide();location.reload();"
+                                                 actionListener="#{serviceBean.onDeleteAction}" />
+                                <p:commandButton id="decline" value="Non"
+                                                 onclick="PF('confirmation').hide()" type="button" />
+
+                            </p:dialog>
+                        </h:form>
+
+
+
+
+                    </f:view>
+
+                </p:layoutUnit>
+
+            </p:layout>
+
+        </h:body>
+
+    </f:view>
+</html>
+

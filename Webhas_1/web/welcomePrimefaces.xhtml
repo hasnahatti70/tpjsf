@@ -1,0 +1,265 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>PrimeFaces</title>
+            </f:facet>
+        </h:head>
+
+        <h:body>
+
+            <p:layout fullPage="true">
+
+                <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
+                    <p:panel header="Header">
+                        <p:panelGrid columns="3">
+                            <p:clock pattern="HH:mm:ss dd.MM.yyyy" mode="server"/>
+                        </p:panelGrid>
+
+                    </p:panel>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="south" size="100" closable="true" collapsible="true">
+                    Footer
+                </p:layoutUnit>
+
+                <p:layoutUnit position="west" size="175" header="Left" collapsible="true">
+                    <p:menu>
+                        <p:submenu label="Resources">
+                            <p:menuitem value="Demo" url="http://www.primefaces.org/showcase-labs/ui/home.jsf" />
+                            <p:menuitem value="Documentation" url="http://www.primefaces.org/documentation.html" />
+                            <p:menuitem value="Forum" url="http://forum.primefaces.org/" />
+                            <p:menuitem value="Themes" url="http://www.primefaces.org/themes.html" />
+
+                        </p:submenu>
+
+                    </p:menu>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center">
+                    <h:form>
+                        <p:panel header="Gestion des services">
+                            <p:panelGrid columns="2">
+                                <p:outputLabel value="id"></p:outputLabel>
+                                <p:inputText value="#{serviceBean.service.id}"></p:inputText>
+                                <p:outputLabel value="Nom"></p:outputLabel>
+                                <p:inputText value="#{serviceBean.service.nom}"></p:inputText>
+                                
+                                <p:commandButton value="Add" actionListener="#{serviceBean.onCreateAction()}" update=":f"></p:commandButton>
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+
+                    <p:panel header="Liste">
+                        <h:form id="f">
+                            <p:dataTable var="s"  value="#{serviceBean.services}">
+                                <p:column filterBy="#{s.id}" headerText="code">
+                                    <h:outputText value="#{s.id}"></h:outputText>
+                                </p:column>
+                                <p:column headerText="nom">
+                                    <h:outputText value="#{s.nom}"></h:outputText>
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+                    </p:panel>
+                </p:layoutUnit>
+                <p:layoutUnit position="center">
+                    <h:form id="f1">
+                        <p:panel header="Gestion des Employes">
+                            <p:panelGrid columns="2" id="p1">
+                                <p:outputLabel value="id"/>
+                                <p:inputText value="#{employeBean.employe.id}"/>
+                                <p:outputLabel value="Nom"/>
+                                <p:inputText value="#{employeBean.employe.nom}"/>
+                                <p:outputLabel value="Prenom"/>
+                                <p:inputText value="#{employeBean.employe.prenom}"/>
+                                <p:outputLabel value="Date"/>
+                                <p:calendar value="#{employeBean.employe.dateNaissance}"/>
+                                <p:outputLabel value="Service"/>
+                                <p:selectOneMenu value="#{employeBean.employe.service.id}" required="true">
+                                    <f:selectItem itemLabel="Select One" itemValue=""/>
+                                    <f:selectItems value="#{serviceBean.service}" var="s"
+                                                   itemLabel="#{s.nom}" itemValue="#{s.id}"/>
+                                </p:selectOneMenu>
+
+                            </p:panelGrid>
+                            <p:commandButton value="Ajouter" actionListener="#{employeBean.onCreateAction()}" update=":form:tab, f1:p1"/>
+                        </p:panel>
+                    </h:form>
+                    <h:form id="form">
+
+                        <p:growl id="messages" showDetail="true"/>
+
+                        <p:dataTable var="m" value="#{employeBean.employes}" id="tab" editable="true" paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15">
+
+                            <f:facet name="header">
+                                Liste des employes
+                            </f:facet>
+
+                            <p:ajax event="rowEdit" listener="#{employesBean.onEdit}" update=":form:messages" />
+                            <p:ajax event="rowEditCancel" listener="#{employesBean.onCancel}" update=":form:messages" />
+
+                            <p:column headerText="Nom" style="width:30%">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{m.nom}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{m.nom}" style="width:100%"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="prenom" style="width:20%">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{m.prenom}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{m.prenom}" style="width:100%" label="Year"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Photo" style="width:20%">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{m.photo}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{m.photo}" style="width:100%" label="Year"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Date naissance" style="width:20%">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <p:calendar value="#{m.dateNaissance}" pattern="yyyy-MM-dd" disabled="true"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:calendar value="#{m.dateNaissance}" pattern="yyyy-MM-dd"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Service" style="width:20%">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{m.service.nom}" />
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu value="#{m.service.id}" required="true" style="width: 100px;">
+                                            <f:selectItem itemLabel="#{m.service.nom}" itemValue="#{m.service.id}"/>
+                                            <f:selectItems value="#{serviceBean.services}" var="s"
+                                                           itemLabel="#{s.nom}" itemValue="#{s.id}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Modifier" style="width:20%">
+                                <p:rowEditor />
+                            </p:column>
+
+
+                            <p:column headerText="Supprimer" style="width:20%">
+                                <p:commandButton id="Supprimer" icon="ui-icon-trash"
+                                                 update=":form:confirmDialog" oncomplete="PF('confirmation').show();"
+                                                 title="Supprime">
+                                    <f:setPropertyActionListener target="#{employeBean.employe}"
+                                                                 value="#{m}" />
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+
+
+                        <p:dialog id="confirmDialog" showEffect="fade"
+                                  header="Suppression d'une service" 
+                                  widgetVar="confirmation">
+                            <h:panelGrid id="display" columns="2" cellpadding="4"
+                                     style="margin:0 auto;" />
+                            <h:inputHidden value="#{employeBean.employe.id}" id="supp"
+                                           required="true" />
+                            
+                            <p:outputLabel
+                                value="Etes vous sûr de vouloir supprimer cette employe ?" />
+                            <p:commandButton id="confirm" value="Oui"
+                                             update="messages,:form:tab" oncomplete="PF('confirmation').hide();location.reload();"
+                                             actionListener="#{employeBean.onDeleteAction()}" />
+                            <p:commandButton id="decline" value="Non"
+                                             onclick="PF('confirmation').hide()" type="button" />
+
+                        </p:dialog>
+                        </h:form>
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <!--                    <f:view>
+                                            <h:form id="f2">
+                                                <p:panel header="Liste des services">
+                                                <p:dataTable id="tab" value="#{serviceBean.services}" var="item">
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Id"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.id}"/>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Code"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.id}"/>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <f:facet name="header">
+                                                            <h:outputText value="Libelle"/>
+                                                        </f:facet>
+                                                        <h:outputText value="#{item.nom}"/>
+                                                    </p:column>
+                                                </p:dataTable>
+                                                </p:panel>
+                                            </h:form>
+                                        </f:view>-->
+
+
+
+                </p:layoutUnit>
+
+            </p:layout>
+
+        </h:body>
+
+    </f:view>
+</html>
+
