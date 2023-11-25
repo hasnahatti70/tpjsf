@@ -1,4 +1,6 @@
 # tp de gestion des employes
+# Objectif du tp 
+L'objectif de ce TP est de développer une application web pour la gestion des employés d'une entreprise. Il faut utiliser JSF (JavaServer Faces) et Hibernate ou EJB (Enterprise JavaBeans) pour créer une application capable de gérer les services et les employés de l'entreprise.
 
 # Screenchoot
 ## la géneration du base de donnée
